@@ -58,6 +58,8 @@ def plot_samples(root: str, split: str = "train", n: int = 9, seed: int = 42, sa
     fig, axes = plt.subplots(rows, cols, figsize=(4 * cols, 4 * rows))
     axes = axes.flatten() if len(sample) > 1 else [axes]
 
+    total_annotations_found = 0
+
     for ax, img_path in zip(axes, sample):
         img = Image.open(img_path).convert("RGB")
         w_img, h_img = img.size
@@ -65,6 +67,7 @@ def plot_samples(root: str, split: str = "train", n: int = 9, seed: int = 42, sa
 
         label_path = lbl_dir / f"{img_path.stem}.txt"
         annotations = load_yolo_annotations(label_path)
+        total_annotations_found += len(annotations)
         for cls_id, kind, data in annotations:
             color = CLASS_COLORS[cls_id % len(CLASS_COLORS)]
             label = CLASS_NAMES[cls_id] if 0 <= cls_id < len(CLASS_NAMES) else f"cls{cls_id}"
@@ -102,6 +105,13 @@ def plot_samples(root: str, split: str = "train", n: int = 9, seed: int = 42, sa
         ax.axis("off")
 
     plt.tight_layout()
+    if total_annotations_found == 0:
+        print("⚠️  هشدار: هیچ annotation ای برای نمونه‌های انتخاب‌شده پیدا/رسم نشد!")
+        print("    این معمولاً یعنی ماژول قدیمی در حافظه کش شده. راه‌حل:")
+        print("    import importlib, data.visualize_samples as _vs; importlib.reload(_vs)")
+        print("    یا Restart Kernel و اجرای دوباره‌ی سلول‌ها از ابتدا.")
+    else:
+        print(f"✅ مجموعاً {total_annotations_found} annotation روی {len(sample)} تصویر رسم شد.")
     if save_path:
         plt.savefig(save_path, dpi=120, bbox_inches="tight")
         print(f"ذخیره شد: {save_path}")

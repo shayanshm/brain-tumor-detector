@@ -15,6 +15,13 @@ dataset:
   annotation_format_note: >
     کشف شد در Phase 2.4/2.6 با اجرای واقعی روی Kaggle (تعداد ستون‌های فرد 19-29).
     برای Object Detection، bbox محاطی (min/max مختصات) از هر پالیگان استخراج می‌شود.
+  class_distribution:
+    # تاییدشده با اجرای واقعی روی Kaggle در 2026-08-10؛ مطابق دیتاست کلاسیک Cheng et al.
+    train: {glioma: 983, meningioma: 503, pituitary: 658}
+    valid: {glioma: 285, meningioma: 142, pituitary: 185}
+    test:  {glioma: 159, meningioma: 62,  pituitary: 87}
+    total: {glioma: 1427, meningioma: 707, pituitary: 930}
+    imbalance_note: "glioma ~47% از داده — باید در Phase 3/4 و گزارش نهایی لحاظ شود"
   source_note: "همان دیتاست کلاسیک Cheng et al. (3064 تصویر T1-weighted CE-MRI)، توسط Roboflow به فرمت YOLO تبدیل شده"
   splits:
     train: {path: "train", n_images: 2144, n_labels: 2144, empty_labels: 0}
