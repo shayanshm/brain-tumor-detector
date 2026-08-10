@@ -1,0 +1,42 @@
+# =============================================================================
+# requirements.txt — پروژه مقایسه Faster R-CNN (torchvision) در برابر YOLO11
+# تمام نسخه‌ها در تاریخ 2026-08-10 روی PyPI وریفای شدند (pip index versions).
+# =============================================================================
+
+# --- Core DL stack ---
+# روی Kaggle/Colab: torch/torchvision از پیش نصب و با GPU/CUDA محیط سازگارند —
+# آن‌ها را دوباره نصب نکنید مگر لازم باشد. برای اجرای محلی:
+torch>=2.4.0
+torchvision>=0.19.0
+
+# --- Faster R-CNN (torchvision.models.detection — به‌جای Detectron2) ---
+# تصمیم فاز ۰: Detectron2 به‌دلیل ریسک بالای شکست build با CUDA/torch نسخه‌های اخیر کنار گذاشته شد.
+# torchvision.models.detection.fasterrcnn_resnet50_fpn_v2 بدون مرحله‌ی build جداگانه کار می‌کند.
+fvcore==0.1.5.post20221221      # برای شمارش FLOPs/Params مستقل از فریمورک
+pycocotools==2.0.11             # برای محاسبه mAP@0.5 / mAP@0.5:0.95 استاندارد COCO-style
+
+# --- YOLO11 ---
+ultralytics==8.4.117
+
+# --- Robustness (Phase 6) ---
+albumentations==2.0.8           # توجه: API نسخه 2.x نسبت به 1.x تغییر کرده؛ کدها مطابق v2 نوشته می‌شوند
+opencv-python-headless>=4.10.0
+
+# --- Explainability (Phase 7) ---
+grad-cam==1.5.5
+
+# --- Statistical Analysis (Phase 8) ---
+scipy==1.18.0
+scikit-learn==1.9.0
+statsmodels==0.14.6
+
+# --- عمومی / EDA / گزارش‌گیری ---
+numpy>=1.26.0,<3.0.0
+pandas>=2.2.0
+matplotlib>=3.9.0
+seaborn>=0.13.2
+pyyaml>=6.0.2
+tqdm>=4.66.0
+
+# --- دانلود دیتاست ---
+kaggle==2.2.4

@@ -1,0 +1,26 @@
+# کانفیگ سراسری پروژه — منبع واحد حقیقت (single source of truth) برای هر دو دیتکتور
+# مقادیر کلاس‌ها مستقیماً از data.yaml واقعی کاربر گرفته شده‌اند (Phase 0/2).
+
+project:
+  name: "brain-tumor-detector-comparison"
+  seed: 42
+
+dataset:
+  kaggle_slug: "pkdarabi/medical-image-dataset-brain-tumor-detection"
+  # مسیر واقعی mount‌شده روی Kaggle Notebook (تایید شده با `!ls` توسط کاربر در 2026-08-10):
+  kaggle_input_path: "/kaggle/input/datasets/pkdarabi/medical-image-dataset-brain-tumor-detection/BrainTumor/BrainTumorYolov11"
+  num_classes: 3
+  class_names: ["glioma", "meningioma", "pituitary"]
+  splits:
+    train: "train"
+    val: "valid"
+    test: "test"
+
+# این بخش در Phase 3.3 نهایی و "منجمد" می‌شود و عیناً در Phase 4 بازتولید می‌شود.
+training_frozen_config:
+  image_size: 640
+  batch_size: null      # TODO: Phase 3.3
+  epochs: null           # TODO: Phase 3.3
+  optimizer: null        # TODO: Phase 3.3
+  learning_rate: null    # TODO: Phase 3.3
+  augmentation: null     # TODO: Phase 3.3
