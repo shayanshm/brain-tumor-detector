@@ -13,8 +13,11 @@ CLASS_NAMES = ["glioma", "meningioma", "pituitary"]
 
 def parse_label_file(path: Path):
     """
-    هر خط را parse می‌کند و مشکلات احتمالی را برمی‌گرداند.
-    فرمت مورد انتظار هر خط: class_id x_center y_center width height (همه نرمالایز 0..1)
+    از هر خط پشتیبانی می‌کند از دو فرمت:
+      - bbox استاندارد YOLO detection (5 ستون): class x_center y_center w h
+      - polygon (YOLO segmentation, ستون فرد >=7): class x1 y1 x2 y2 ... xn yn
+        که در این حالت bbox محاطی (min/max) به‌صورت خودکار استخراج می‌شود.
+    خروجی: لیستی از (cls_id, x_center, y_center, w, h, source_format)
     """
     boxes = []
     issues = []
@@ -27,27 +30,46 @@ def parse_label_file(path: Path):
 
     for line_no, line in enumerate(text.splitlines(), start=1):
         parts = line.strip().split()
-        if len(parts) != 5:
-            issues.append(f"خط {line_no}: تعداد ستون‌ها {len(parts)} است (انتظار: 5)")
+        if len(parts) < 5:
+            issues.append(f"خط {line_no}: تعداد ستون‌ها {len(parts)} است (خیلی کم)")
             continue
+
         try:
             cls_id = int(parts[0])
-            x, y, w, h = (float(v) for v in parts[1:])
+            coords = [float(v) for v in parts[1:]]
         except ValueError:
             issues.append(f"خط {line_no}: مقدار غیرعددی")
             continue
 
         if not (0 <= cls_id < len(CLASS_NAMES)):
             issues.append(f"خط {line_no}: class_id={cls_id} خارج از بازه‌ی مجاز [0,{len(CLASS_NAMES)-1}]")
+            continue
+
+        if len(coords) == 4:
+            # فرمت bbox استاندارد
+            x, y, w, h = coords
+            source_format = "bbox"
+        elif len(coords) >= 6 and len(coords) % 2 == 0:
+            # فرمت polygon: استخراج bbox محاطی از min/max نقاط
+            xs = coords[0::2]
+            ys = coords[1::2]
+            x_min, x_max = min(xs), max(xs)
+            y_min, y_max = min(ys), max(ys)
+            x, y = (x_min + x_max) / 2, (y_min + y_max) / 2
+            w, h = x_max - x_min, y_max - y_min
+            source_format = "polygon"
+        else:
+            issues.append(f"خط {line_no}: تعداد ستون‌ها ({len(parts)}) با هیچ فرمت شناخته‌شده‌ای مطابقت ندارد")
+            continue
+
         if not (0.0 <= x <= 1.0 and 0.0 <= y <= 1.0):
-            issues.append(f"خط {line_no}: مرکز بیرون از بازه [0,1] -> x={x}, y={y}")
+            issues.append(f"خط {line_no}: مرکز بیرون از بازه [0,1] -> x={x:.3f}, y={y:.3f}")
         if not (0.0 < w <= 1.0 and 0.0 < h <= 1.0):
-            issues.append(f"خط {line_no}: عرض/ارتفاع نامعتبر -> w={w}, h={h}")
-        # چک سرریز از مرز تصویر (bbox باید کاملا داخل [0,1] بماند)
+            issues.append(f"خط {line_no}: عرض/ارتفاع نامعتبر -> w={w:.3f}, h={h:.3f}")
         if x - w / 2 < -1e-6 or x + w / 2 > 1 + 1e-6 or y - h / 2 < -1e-6 or y + h / 2 > 1 + 1e-6:
             issues.append(f"خط {line_no}: bbox از مرز تصویر بیرون می‌زند")
 
-        boxes.append((cls_id, x, y, w, h))
+        boxes.append((cls_id, x, y, w, h, source_format))
 
     return boxes, issues
 
@@ -62,6 +84,7 @@ def analyze(root: str) -> dict:
             continue
 
         class_counts = Counter()
+        format_counts = Counter()
         boxes_per_image = []
         multi_class_images = 0
         total_issues = defaultdict(list)
@@ -75,15 +98,17 @@ def analyze(root: str) -> dict:
             classes_in_image = {b[0] for b in boxes}
             if len(classes_in_image) > 1:
                 multi_class_images += 1
-            for cls_id, *_ in boxes:
+            for cls_id, _x, _y, _w, _h, fmt in boxes:
                 if 0 <= cls_id < len(CLASS_NAMES):
                     class_counts[CLASS_NAMES[cls_id]] += 1
+                format_counts[fmt] += 1
 
         n_files = len(label_files)
         avg_boxes = sum(boxes_per_image) / n_files if n_files else 0
 
         print(f"\n== {split} ==")
         print(f"  تعداد فایل annotation: {n_files}")
+        print(f"  فرمت annotation ها: {dict(format_counts)}")
         print(f"  توزیع کلاس‌ها (تعداد bbox): {dict(class_counts)}")
         print(f"  میانگین bbox به‌ازای هر تصویر: {avg_boxes:.3f}")
         print(f"  تصاویر چندکلاسه (بیش از یک نوع تومور در یک تصویر): {multi_class_images}")

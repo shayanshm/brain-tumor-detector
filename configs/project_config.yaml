@@ -11,6 +11,10 @@ dataset:
   num_classes: 3
   class_names: ["glioma", "meningioma", "pituitary"]
   structure: "split/images + split/labels (زیرپوشه جدا، تایید شده)"
+  annotation_format: "YOLO Segmentation Polygon (نه bbox ساده) — هر خط: class x1 y1 x2 y2 ... xn yn"
+  annotation_format_note: >
+    کشف شد در Phase 2.4/2.6 با اجرای واقعی روی Kaggle (تعداد ستون‌های فرد 19-29).
+    برای Object Detection، bbox محاطی (min/max مختصات) از هر پالیگان استخراج می‌شود.
   source_note: "همان دیتاست کلاسیک Cheng et al. (3064 تصویر T1-weighted CE-MRI)، توسط Roboflow به فرمت YOLO تبدیل شده"
   splits:
     train: {path: "train", n_images: 2144, n_labels: 2144, empty_labels: 0}
