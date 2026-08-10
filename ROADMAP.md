@@ -38,27 +38,29 @@
 - [x] 1.4 جدول خلاصه‌ی ۱۵ مرجع در `reports/literature_review.md`
 **🚪 گیت ۱: در انتظار تایید شما**
 
-## Phase 2 — آماده‌سازی دیتاست 🔄
-- [x] 2.1 دسترسی به دیتاست روی Kaggle — تایید شد
-- [x] 2.2 ساختار خام: `split/images` + `split/labels` — تایید شد (train=2144, valid=612, test=308)
-- [x] 2.3 کلاس‌ها: glioma, meningioma, pituitary — تایید شد
-- [x] 2.4 توزیع کلاس‌ها — تایید شد: glioma=1427(47%), meningioma=707(23%), pituitary=930(30%) — imbalance یادداشت شد
-- [x] 2.5 ویژوالایز نمونه‌ها — تایید بصری شد (polygon + bbox محاطی درست رسم می‌شوند)
-- [x] 2.6 کیفیت annotation — ۰ مشکل در همه‌ی ۳۰۶۴ annotation؛ **کشف مهم: فرمت واقعی polygon segmentation است نه bbox ساده**
-- [ ] 2.7 تبدیل به COCO JSON + YOLO detection خالص — کد آماده و تست شد (`convert_annotations.py`)، **در انتظار اجرای شما روی داده واقعی**
-- [ ] 2.8 گزارش دیتاست نهایی
-**🚪 گیت ۲: هنوز باز — یک قدم مانده**
+## Phase 2 — آماده‌سازی دیتاست ✅ **[در انتظار تایید گیت]**
+- [x] 2.1 دسترسی به دیتاست روی Kaggle
+- [x] 2.2 ساختار خام تایید شد (train=2144, valid=612, test=308)
+- [x] 2.3 کلاس‌ها: glioma, meningioma, pituitary
+- [x] 2.4 توزیع کلاس‌ها: glioma=1427(47%), meningioma=707(23%), pituitary=930(30%)
+- [x] 2.5 ویژوالایز نمونه‌ها — تایید بصری شد
+- [x] 2.6 کیفیت annotation — ۰ مشکل از ۳۰۶۴؛ کشف فرمت polygon
+- [x] 2.7 تبدیل به COCO JSON + YOLO detection — تایید شد با اجرای واقعی (3064/3064 موفق)
+- [x] 2.8 گزارش دیتاست نهایی → `reports/dataset_report.md`
+**🚪 گیت ۲: در انتظار تایید شما**
 
 راهنمای مدیریت خروجی/مقاومت در برابر قطع سشن: `CONTINUITY.md`
 
-## Phase 3 — پایه: Faster R-CNN (torchvision) ⬜
-- [ ] 3.1 بارگذاری `fasterrcnn_resnet50_fpn_v2` با وزن از‌پیش‌آموزش‌دیده COCO
-- [ ] 3.2 Dataset/DataLoader سفارشی روی COCO JSON از Phase 2.7
-- [ ] 3.3 تعریف config آموزش (منجمد برای Phase 4)
-- [ ] 3.4 اجرای آموزش + لاگ منحنی‌ها
-- [ ] 3.5 محاسبه FPS/Params/GFLOPs (fvcore) + mAP (pycocotools)
+## Phase 3 — پایه: Faster R-CNN (torchvision) 🔄
+- [x] 3.1 مدل `fasterrcnn_resnet50_fpn_v2` با وزن pretrained COCO — تست شد (`faster_rcnn.py`)
+- [x] 3.2 Dataset/DataLoader روی COCO JSON — تست شد با forward+loss واقعی (`coco_dataset.py`)
+- [x] 3.3 config منجمد: batch=8, epochs=50, SGD(lr=0.005), StepLR — در project_config.yaml
+- [x] کد آموزش (`train_faster_rcnn.py`) — قطعات (dataloader/model/optimizer/checkpoint) تست شدند
+- [x] کد ارزیابی (`eval/model_stats.py`, `eval/eval_coco.py`) — با assert صحت تست شدند
+- [ ] 3.4 اجرای آموزش واقعی روی GPU کگل — **در انتظار اجرای شما** (این قسمت زمان‌بر است، چند ساعت)
+- [ ] 3.5 محاسبه‌ی نهایی FPS/Params/GFLOPs/mAP روی نتیجه‌ی واقعی
 - [ ] 3.6 گزارش عملکرد پایه
-**🚪 گیت ۳**
+**🚪 گیت ۳: هنوز باز — نیازمند اجرای آموزش واقعی توسط شما**
 
 ## Phase 4 — YOLO11 ⬜
 - [ ] 4.1-4.5 (طبق الگوی Phase 3، با تحمیل دقیق config منجمدشده)

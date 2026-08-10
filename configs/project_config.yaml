@@ -29,11 +29,21 @@ dataset:
     test:  {path: "test",  n_images: 308,  n_labels: 308,  empty_labels: 0}
   total_images: 3064
 
-# این بخش در Phase 3.3 نهایی و "منجمد" می‌شود و عیناً در Phase 4 بازتولید می‌شود.
+# این بخش در Phase 3.3 نهایی و "منجمد" شد و عیناً (تا حد امکان فنی) در Phase 4 بازتولید می‌شود.
 training_frozen_config:
   image_size: 640
-  batch_size: null      # TODO: Phase 3.3
-  epochs: null           # TODO: Phase 3.3
-  optimizer: null        # TODO: Phase 3.3
-  learning_rate: null    # TODO: Phase 3.3
-  augmentation: null     # TODO: Phase 3.3
+  batch_size: 8          # با توجه به GPU T4/P100 کگل؛ در صورت OOM به 4 کاهش یابد
+  epochs: 50
+  optimizer: "SGD"
+  learning_rate: 0.005
+  momentum: 0.9
+  weight_decay: 0.0005
+  lr_scheduler: "StepLR (step_size=15, gamma=0.1)"
+  augmentation:
+    horizontal_flip: 0.5   # فقط افقی؛ عمودی/چرخش زیاد برای MRI مغز از نظر آناتومیک نامناسب است
+    brightness_contrast: 0.2
+    # توجه: augmentation هندسی تهاجمی (چرخش زیاد، shear) عمداً حذف شد چون می‌تواند
+    # آناتومی مغز را غیرواقعی کند؛ این تصمیم در گزارش نهایی توجیه می‌شود.
+  note: >
+    برای YOLO11 (Phase 4) همین مقادیر تا حد امکان در hyp-config Ultralytics تحمیل می‌شود؛
+    هرجا YOLO محدودیت فنی داشت (مثلاً augmentation پیش‌فرض mosaic/hsv)، تفاوت صریحاً مستند می‌شود.
