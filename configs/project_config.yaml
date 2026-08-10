@@ -7,14 +7,16 @@ project:
 
 dataset:
   kaggle_slug: "pkdarabi/medical-image-dataset-brain-tumor-detection"
-  # مسیر واقعی mount‌شده روی Kaggle Notebook (تایید شده با `!ls` توسط کاربر در 2026-08-10):
   kaggle_input_path: "/kaggle/input/datasets/pkdarabi/medical-image-dataset-brain-tumor-detection/BrainTumor/BrainTumorYolov11"
   num_classes: 3
   class_names: ["glioma", "meningioma", "pituitary"]
+  structure: "split/images + split/labels (زیرپوشه جدا، تایید شده)"
+  source_note: "همان دیتاست کلاسیک Cheng et al. (3064 تصویر T1-weighted CE-MRI)، توسط Roboflow به فرمت YOLO تبدیل شده"
   splits:
-    train: "train"
-    val: "valid"
-    test: "test"
+    train: {path: "train", n_images: 2144, n_labels: 2144, empty_labels: 0}
+    val:   {path: "valid", n_images: 612,  n_labels: 612,  empty_labels: 0}
+    test:  {path: "test",  n_images: 308,  n_labels: 308,  empty_labels: 0}
+  total_images: 3064
 
 # این بخش در Phase 3.3 نهایی و "منجمد" می‌شود و عیناً در Phase 4 بازتولید می‌شود.
 training_frozen_config:
