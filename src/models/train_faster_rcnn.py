@@ -86,6 +86,7 @@ def main(args):
     ckpt_dir.mkdir(parents=True, exist_ok=True)
     log_path = out_dir / "logs" / "faster_rcnn_train_log.txt"
     log_path.parent.mkdir(parents=True, exist_ok=True)
+    resume_path = ckpt_dir / "training_state.pt"
 
     train_loader, val_loader = get_dataloaders(data_root, args.batch_size)
     print(f"تعداد batch های train: {len(train_loader)} | val: {len(val_loader)}")
@@ -97,12 +98,35 @@ def main(args):
     optimizer = torch.optim.SGD(params, lr=args.lr, momentum=0.9, weight_decay=0.0005)
     lr_scheduler = torch.optim.lr_scheduler.StepLR(optimizer, step_size=15, gamma=0.1)
 
-    best_val_loss = float("inf")
-    for epoch in range(1, args.epochs + 1):
+    start_epoch = 1
+    # --- Resume خودکار: اگر training_state.pt از اجرای قبلی وجود داشته باشد، دقیقاً از همان‌جا ادامه می‌دهیم ---
+    if resume_path.exists():
+        print(f"⏯️  training_state.pt پیدا شد -- ادامه‌ی آموزش از همان‌جا (نه از صفر)")
+        state = torch.load(resume_path, map_location=device)
+        model.load_state_dict(state["model"])
+        optimizer.load_state_dict(state["optimizer"])
+        lr_scheduler.load_state_dict(state["scheduler"])
+        start_epoch = state["epoch"] + 1
+        print(f"   آخرین epoch کامل‌شده: {state['epoch']} -> شروع از epoch {start_epoch}")
+    else:
+        print("هیچ training_state.pt ای پیدا نشد -- شروع از epoch 1 (اجرای تازه)")
+
+    if start_epoch > args.epochs:
+        print(f"آموزش قبلاً تا epoch {start_epoch - 1} تمام شده (>= هدف {args.epochs}). کاری نمانده.")
+        return
+
+    for epoch in range(start_epoch, args.epochs + 1):
         train_one_epoch(model, optimizer, train_loader, device, epoch, log_path)
         lr_scheduler.step()
 
-        # ذخیره‌ی چک‌پوینت آخرین epoch (سبک‌تر از ذخیره‌ی هر epoch برای صرفه‌جویی دیسک)
+        # ذخیره‌ی state کامل (نه فقط وزن مدل) تا resume دقیق ممکن باشد
+        torch.save({
+            "epoch": epoch,
+            "model": model.state_dict(),
+            "optimizer": optimizer.state_dict(),
+            "scheduler": lr_scheduler.state_dict(),
+        }, resume_path)
+        # یک نسخه‌ی سبک‌تر فقط-وزن هم برای استفاده در Phase 3.5/5 (inference/eval)
         torch.save(model.state_dict(), ckpt_dir / "faster_rcnn_last.pt")
 
         if epoch % 5 == 0 or epoch == args.epochs:
