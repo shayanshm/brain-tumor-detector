@@ -51,16 +51,20 @@
 
 راهنمای مدیریت خروجی/مقاومت در برابر قطع سشن: `CONTINUITY.md`
 
-## Phase 3 — پایه: Faster R-CNN (torchvision) 🔄
-- [x] 3.1-3.3 مدل/Dataset/config — تست و تایید شد
-- [x] 3.4 آموزش واقعی روی GPU کگل — **کامل شد**: 50/50 epoch، ۱۰.۰۴ ساعت، loss از 0.2036→0.0078 (کاهش 96.2%)،
-      منحنی سالم و همگرا (`reports/figures/faster_rcnn_loss_curve.png`)
-- [x] کد بازسازی منحنی mAP/Precision/Recall روی چک‌پوینت‌های ذخیره‌شده — تست شد (`eval_checkpoint_curve.py`)
-      (جبران کمبود: لاگ اولیه فقط train loss داشت، سند اصلی precision/recall/mAP هم می‌خواهد)
-- [ ] 3.5 اجرای واقعی: (الف) منحنی mAP روی val از ۱۰ چک‌پوینت، (ب) mAP نهایی روی test، (ج) FPS/Params/GFLOPs
-      — **در انتظار اجرای شما روی Kaggle**
-- [ ] 3.6 گزارش عملکرد پایه (بعد از دیدن نتایج 3.5)
-**🚪 گیت ۳: هنوز باز**
+## Phase 3 — پایه: Faster R-CNN (torchvision) ✅ **[در انتظار تایید گیت]**
+- [x] 3.1-3.4 مدل/آموزش کامل — 50/50 epoch، ۱۰.۰۴ ساعت، loss کاهش ۹۶.۲٪
+- [x] 3.5 مAP/Precision/Recall/FPS/Params/GFLOPs — همه محاسبه و تایید شد:
+      mAP@0.5(test)=0.818 | mAP@0.5:0.95(test)=0.593 | AR@100(test)=0.670 |
+      Params=43.27M | GFLOPs=280.38 | FPS=7.53 | Size=165.41MB
+      بدون نشانه overfitting (منحنی val پایدار با وجود کاهش شدید train loss)
+- [x] 3.6 گزارش نهایی → `reports/faster_rcnn_performance_report.md`
+      + فایل‌های خام: `outputs/logs/faster_rcnn_val_curve.csv`, `faster_rcnn_test_eval.txt`, `faster_rcnn_model_stats.txt`
+**🚪 گیت ۳: در انتظار تایید شما**
+
+⚠️ **درس گرفته‌شده (اعمال‌شده برای Phase 4):** train_faster_rcnn.py فقط train loss لاگ می‌کرد؛ mAP/Recall
+باید عقب‌گرد از چک‌پوینت‌ها بازسازی می‌شد. **برای Phase 4 این مشکل رخ نخواهد داد** چون Ultralytics YOLO
+به‌صورت built-in و خودکار در هر epoch یک `results.csv` با ستون‌های
+precision/recall/mAP50/mAP50-95 (هم train هم val) می‌نویسد — بدون نیاز به کد اضافه.
 
 ## Phase 4 — YOLO11 ⬜
 - [ ] 4.1-4.5 (طبق الگوی Phase 3، با تحمیل دقیق config منجمدشده)
