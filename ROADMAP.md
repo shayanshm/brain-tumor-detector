@@ -52,15 +52,15 @@
 راهنمای مدیریت خروجی/مقاومت در برابر قطع سشن: `CONTINUITY.md`
 
 ## Phase 3 — پایه: Faster R-CNN (torchvision) 🔄
-- [x] 3.1 مدل `fasterrcnn_resnet50_fpn_v2` با وزن pretrained COCO — تست شد (`faster_rcnn.py`)
-- [x] 3.2 Dataset/DataLoader روی COCO JSON — تست شد با forward+loss واقعی (`coco_dataset.py`)
-- [x] 3.3 config منجمد: batch=8, epochs=50, SGD(lr=0.005), StepLR — در project_config.yaml
-- [x] کد آموزش (`train_faster_rcnn.py`) — قطعات (dataloader/model/optimizer/checkpoint) تست شدند
-- [x] کد ارزیابی (`eval/model_stats.py`, `eval/eval_coco.py`) — با assert صحت تست شدند
-- [ ] 3.4 اجرای آموزش واقعی روی GPU کگل — **در انتظار اجرای شما** (این قسمت زمان‌بر است، چند ساعت)
-- [ ] 3.5 محاسبه‌ی نهایی FPS/Params/GFLOPs/mAP روی نتیجه‌ی واقعی
-- [ ] 3.6 گزارش عملکرد پایه
-**🚪 گیت ۳: هنوز باز — نیازمند اجرای آموزش واقعی توسط شما**
+- [x] 3.1-3.3 مدل/Dataset/config — تست و تایید شد
+- [x] 3.4 آموزش واقعی روی GPU کگل — **کامل شد**: 50/50 epoch، ۱۰.۰۴ ساعت، loss از 0.2036→0.0078 (کاهش 96.2%)،
+      منحنی سالم و همگرا (`reports/figures/faster_rcnn_loss_curve.png`)
+- [x] کد بازسازی منحنی mAP/Precision/Recall روی چک‌پوینت‌های ذخیره‌شده — تست شد (`eval_checkpoint_curve.py`)
+      (جبران کمبود: لاگ اولیه فقط train loss داشت، سند اصلی precision/recall/mAP هم می‌خواهد)
+- [ ] 3.5 اجرای واقعی: (الف) منحنی mAP روی val از ۱۰ چک‌پوینت، (ب) mAP نهایی روی test، (ج) FPS/Params/GFLOPs
+      — **در انتظار اجرای شما روی Kaggle**
+- [ ] 3.6 گزارش عملکرد پایه (بعد از دیدن نتایج 3.5)
+**🚪 گیت ۳: هنوز باز**
 
 ## Phase 4 — YOLO11 ⬜
 - [ ] 4.1-4.5 (طبق الگوی Phase 3، با تحمیل دقیق config منجمدشده)
