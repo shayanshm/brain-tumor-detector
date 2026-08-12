@@ -35,8 +35,9 @@ Kaggle: `pkdarabi/medical-image-dataset-brain-tumor-detection` (فرمت YOLOv11
 - نتیجه‌ی اجرای واقعی روی کگل: 3064/3064 annotation با موفقیت تبدیل شد، ۰ خط رد شده.
 
 ## نمونه‌های بصری
-نمونه‌ی ویژوالایز شده (۹ تصویر تصادفی train با overlay چندضلعی) در چت تایید شد — annotation ها دقیقاً
-روی نواحی غیرطبیعی MRI منطبق‌اند. فایل مرجع: `src/data/visualize_samples.py`
+نمونه‌ی ویژوالایز شده (۹ تصویر تصادفی train با overlay چندضلعی) — annotation ها دقیقاً روی نواحی
+غیرطبیعی MRI منطبق‌اند. تصویر واقعی: `reports/figures/dataset_sample_visualization.png`
+اسکریپت مولد: `src/data/visualize_samples.py`
 
 ## نتیجه‌گیری Phase 2
 دیتاست تمیز، کامل، و برای هر دو معماری (Faster R-CNN و YOLO11) آماده است. تنها نکته‌ی قابل‌ذکر برای فصل

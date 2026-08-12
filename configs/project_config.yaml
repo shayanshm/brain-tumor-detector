@@ -47,3 +47,22 @@ training_frozen_config:
   note: >
     برای YOLO11 (Phase 4) همین مقادیر تا حد امکان در hyp-config Ultralytics تحمیل می‌شود؛
     هرجا YOLO محدودیت فنی داشت (مثلاً augmentation پیش‌فرض mosaic/hsv)، تفاوت صریحاً مستند می‌شود.
+
+# نتایج نهایی (برای استفاده مستقیم در Phase 5 - مقایسه کمّی)
+results:
+  faster_rcnn:
+    checkpoint: "faster_rcnn_epoch50.pt"
+    test_set:
+      map_50_95: 0.5926
+      map_50: 0.8175
+      map_75: 0.6732
+      ar_100: 0.6700
+    compute:
+      params_millions: 43.27
+      gflops: 280.38
+      model_size_mb: 165.41
+      fps_kaggle_gpu: 7.53
+    training_time_hours: 10.04
+    overfitting_check: "بدون نشانه -- val metrics در epoch 50 پایدار/بهتر از epoch 5 بودند"
+  yolo11:
+    status: "در انتظار Phase 4"
