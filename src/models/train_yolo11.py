@@ -41,6 +41,16 @@ FROZEN_TRAIN_ARGS = dict(
 
 def main(args):
     set_seed(42)
+
+    # --- خودتاییدی صریح (همان الگوی train_faster_rcnn.py) ---
+    print("\n" + "=" * 70)
+    print(f"[AUGMENTATION CHECK] fliplr={FROZEN_TRAIN_ARGS['fliplr']} | hsv_v={FROZEN_TRAIN_ARGS['hsv_v']} | "
+          f"mosaic={FROZEN_TRAIN_ARGS['mosaic']} | optimizer={FROZEN_TRAIN_ARGS['optimizer']} | "
+          f"lr0={FROZEN_TRAIN_ARGS['lr0']}")
+    print("[AUGMENTATION CHECK] این باید fliplr=0.5 نشان دهد (منطبق با Faster R-CNN v2)")
+    print("=" * 70 + "\n")
+    assert FROZEN_TRAIN_ARGS["fliplr"] == 0.5, "خطای بحرانی: augmentation منطبق نیست!"
+
     from ultralytics import YOLO
 
     model = YOLO(args.model)

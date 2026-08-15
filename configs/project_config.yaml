@@ -40,10 +40,18 @@ training_frozen_config:
   weight_decay: 0.0005
   lr_scheduler: "StepLR (step_size=15, gamma=0.1)"
   augmentation:
-    horizontal_flip: 0.5   # فقط افقی؛ عمودی/چرخش زیاد برای MRI مغز از نظر آناتومیک نامناسب است
+    bug_found_and_fixed: >
+      در Phase 3 اصلی، transforms=None بود (باگ) -- Faster R-CNN بدون هیچ augmentation آموزش دید.
+      در بازبینی قبل از Phase 4، این باگ اصلاح و Faster R-CNN با augmentation صحیح دوباره آموزش داده شد.
+    horizontal_flip: 0.5
     brightness_contrast: 0.2
-    # توجه: augmentation هندسی تهاجمی (چرخش زیاد، shear) عمداً حذف شد چون می‌تواند
-    # آناتومی مغز را غیرواقعی کند؛ این تصمیم در گزارش نهایی توجیه می‌شود.
+    applied_via:
+      faster_rcnn: "src/models/augmentation.py -- DetectionAugmentation (تست شد: bbox و pixel content هم‌راستا)"
+      yolo11: "fliplr=0.5, hsv_v=0.2 (نزدیک‌ترین معادل بومی Ultralytics به brightness/contrast)"
+    documented_technical_gap: >
+      Ultralytics معادل مستقیم "Contrast" ندارد؛ فقط hsv_v (نزدیک به brightness) موجود است.
+      این یک محدودیت فنی مستندشده است، طبق سند اصلی که اجازه‌ی مستندسازی چنین تفاوت‌هایی را می‌دهد.
+    geometric_augmentation: "عمداً خاموش (چرخش/shear) در هر دو مدل -- نامناسب برای آناتومی MRI مغز"
   note: >
     برای YOLO11 (Phase 4) همین مقادیر تا حد امکان در hyp-config Ultralytics تحمیل می‌شود؛
     هرجا YOLO محدودیت فنی داشت (مثلاً augmentation پیش‌فرض mosaic/hsv)، تفاوت صریحاً مستند می‌شود.
@@ -51,18 +59,20 @@ training_frozen_config:
 # نتایج نهایی (برای استفاده مستقیم در Phase 5 - مقایسه کمّی)
 results:
   faster_rcnn:
-    checkpoint: "faster_rcnn_epoch50.pt"
-    test_set:
-      map_50_95: 0.5926
-      map_50: 0.8175
-      map_75: 0.6732
-      ar_100: 0.6700
-    compute:
-      params_millions: 43.27
-      gflops: 280.38
-      model_size_mb: 165.41
-      fps_kaggle_gpu: 7.53
-    training_time_hours: 10.04
-    overfitting_check: "بدون نشانه -- val metrics در epoch 50 پایدار/بهتر از epoch 5 بودند"
+    status: >
+      ⚠️ نیازمند بازآموزی واقعی -- هر دو اجرای قبلی (v1 و «v2») در واقع بدون augmentation بودند.
+      کشف شد در 2026-08-13: فایلی که واقعاً روی Kaggle برای «v2» اجرا شد (طبق بررسی Output نوت‌بوک)
+      فاقد transforms=get_transform بود -- یعنی کد قدیمی/pre-fix اجرا شده بود، نه نسخه‌ی اصلاح‌شده.
+      علت محتمل: عدم sync صحیح بین git push محلی و git pull روی Kaggle قبل از شروع آن اجرا.
+    next_run_safety: >
+      از این پس train_faster_rcnn.py با assert صریح شروع می‌شود (چک hflip_prob==0.5) --
+      اگر augmentation فعال نباشد، در همان ثانیه‌ی اول crash می‌کند، نه بعد از ۱۰ ساعت.
+  faster_rcnn_no_augmentation_runs_archive:
+    # دو اجرای مستقل، هر دو بدون augmentation (به‌خاطر همان باگ) -- برای مستندسازی واریانس طبیعی run-to-run
+    run1_v1: {test: {map_50_95: 0.5926, map_50: 0.8175, map_75: 0.6732, ar_100: 0.6700}, hours: 10.04}
+    run2_mislabeled_v2: {test: {map_50_95: 0.5982, map_50: 0.8144, map_75: 0.6948, ar_100: 0.6754}, hours: 9.55}
+    note: >
+      تفاوت بین این دو اجرا (مثلاً mAP@.75: 0.673 در برابر 0.695) صرفاً واریانس طبیعی GPU/init است --
+      نه اثر augmentation. مفید به‌عنوان تخمین بازه‌ی نویز طبیعی run-to-run (~2 واحد درصد).
   yolo11:
-    status: "در انتظار Phase 4"
+    status: "در انتظار Phase 4 (بعد از بازآموزی واقعی Faster R-CNN با augmentation تاییدشده)"

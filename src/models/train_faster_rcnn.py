@@ -21,15 +21,19 @@ from utils.seed import set_seed  # noqa: E402
 
 
 def get_dataloaders(data_root: Path, batch_size: int):
+    from models.augmentation import get_transform
+
     # توجه: images_dir به پوشه‌ی خودِ symlink شده در yolo_detection اشاره می‌کند چون تصاویر آنجا
     # از قبل symlink شده‌اند؛ می‌توانستیم مستقیم از /kaggle/input هم بخوانیم، اما این مسیر یکپارچه‌تر است.
     train_ds = CocoDetectionDataset(
         images_dir=str(data_root / "yolo_detection" / "train" / "images"),
         coco_json_path=str(data_root / "coco_format" / "train.json"),
+        transforms=get_transform(train=True),   # اصلاح باگ Phase 3: قبلاً None بود (بدون augmentation)
     )
     val_ds = CocoDetectionDataset(
         images_dir=str(data_root / "yolo_detection" / "valid" / "images"),
         coco_json_path=str(data_root / "coco_format" / "valid.json"),
+        transforms=get_transform(train=False),  # eval/val همیشه بدون augmentation
     )
 
     train_loader = DataLoader(train_ds, batch_size=batch_size, shuffle=True,
@@ -87,6 +91,23 @@ def main(args):
     log_path = out_dir / "logs" / "faster_rcnn_train_log.txt"
     log_path.parent.mkdir(parents=True, exist_ok=True)
     resume_path = ckpt_dir / "training_state.pt"
+
+    # --- خودتاییدی صریح: تا دیگر هرگز ابهام «آیا augmentation واقعا فعال بود؟» پیش نیاید ---
+    # این پیام هم در stdout و هم در همان فایل لاگ آموزش نوشته می‌شود (قابل رجوع دائمی).
+    from models.augmentation import get_transform
+    _probe = get_transform(train=True)
+    verification_msg = (
+        "\n" + "=" * 70 +
+        f"\n[AUGMENTATION CHECK] hflip_prob={_probe.hflip_prob} | "
+        f"brightness={_probe.brightness} | contrast={_probe.contrast}\n"
+        f"[AUGMENTATION CHECK] این پیام باید hflip_prob=0.5 نشان دهد؛ اگر 0.0 است یعنی\n"
+        f"کد قدیمی (بدون augmentation) در حال اجراست -- سریعاً متوقف و git pull کنید!\n"
+        + "=" * 70 + "\n"
+    )
+    print(verification_msg)
+    with open(log_path, "a") as f:
+        f.write(verification_msg)
+    assert _probe.hflip_prob == 0.5, "خطای بحرانی: augmentation فعال نیست! کد قدیمی در حال اجراست."
 
     train_loader, val_loader = get_dataloaders(data_root, args.batch_size)
     print(f"تعداد batch های train: {len(train_loader)} | val: {len(val_loader)}")
