@@ -51,42 +51,31 @@
 
 راهنمای مدیریت خروجی/مقاومت در برابر قطع سشن: `CONTINUITY.md`
 
-## Phase 3 — پایه: Faster R-CNN (torchvision) 🔄 **[بازگشایی‌شده -- کشف مهم]**
-- [x] اجرای ۱ (v1) و اجرای ۲ (اشتباهاً «v2» نامیده شد) — **هر دو بدون augmentation بودند** (کشف در
-      2026-08-13 با بررسی مستقیم Output نوت‌بوک Kaggle: فایل واقعاً اجراشده فاقد `transforms=get_transform` بود)
-- [x] علت: احتمالاً عدم `git push`/`git pull` صحیح قبل از اجرای دوم
-- [x] **اصلاح دائمی:** `train_faster_rcnn.py` و `train_yolo11.py` حالا با `assert` صریح شروع می‌شوند —
-      اگر augmentation فعال نباشد، در همان ثانیه‌ی اول crash می‌کنند (نه بعد از ۱۰ ساعت بی‌خبری)
-- [ ] **اجرای سوم (واقعی، با augmentation تاییدشده) — در انتظار شما**
-
-### 🛡️ پروتکل ضدخطا قبل از این اجرا (اجباری، به‌ترتیب)
-۱. در **خود صفحه‌ی وب گیت‌هاب** (نه لوکال) فایل `src/models/train_faster_rcnn.py` را باز کنید و با چشم
-   خودتان ببینید خط `transforms=get_transform(train=True)` آنجا هست — این تنها منبع قابل‌اعتماد است.
-۲. در نوت‌بوک Kaggle، **در یک پوشه‌ی کاملاً تازه** (نه پوشه‌ی قبلی که ممکن است کهنه باشد) `git clone` بزنید.
-۳. بلافاصله بعد از clone و **قبل از شروع آموزش**، این چک سریع (چند ثانیه، رایگان) را بزنید:
-   ```
-   !grep -n "get_transform" /kaggle/working/brain-tumor-detector/src/models/train_faster_rcnn.py
-   ```
-   باید ۳ خط ببینید (import + دو بار transforms=...). اگر چیزی چاپ نشد، متوقف شوید و git clone را دوباره بزنید.
-۴. مسیر `--out` را **جدید** بدهید (`outputs_v3`، نه v2/outputs قبلی) تا resume logic اشتباه نکند.
-۵. کد خودش هم در ثانیه‌ی اول با `[AUGMENTATION CHECK] hflip_prob=0.5` تایید نهایی را چاپ می‌کند.
-
-```
-!python .../train_faster_rcnn.py --data-root .../data/processed \
-    --epochs 50 --batch-size 8 --out /kaggle/working/brain-tumor-detector/outputs_v3
-```
-**🚪 گیت ۳: بازگشایی‌شده — نیازمند اجرای سوم و تایید مجدد**
+## Phase 3 — پایه: Faster R-CNN (torchvision) ✅ **[بسته شد]**
+- [x] مدل، Dataset، augmentation (Horizontal Flip p=0.5 + Brightness/Contrast ±20%)، و آموزش کامل
+      — ۵۰ epoch، ۱۰.۳۷ ساعت روی GPU کگل
+- [x] 3.5 نتایج نهایی روی TEST set:
+      mAP@0.5=0.853 | mAP@0.5:0.95=0.630 | mAP@0.75=0.707 | AR@100=0.702 |
+      Params=43.27M | GFLOPs=280.38 | FPS=8.12 | Size=165.41MB
+      بدون نشانه‌ی overfitting (منحنی val از epoch ۲۰ به بعد پایدار و بالا ماند)
+- [x] تحلیل جانبی Ablation (اثر augmentation): بهبود یکنواخت +3.2 تا +3.8 واحد درصد در همه‌ی معیارها
+      نسبت به یک اجرای کنترل بدون augmentation با شرایط کاملاً یکسان
+- [x] 3.6 گزارش نهایی → `reports/faster_rcnn_performance_report.md`
+      + نمودارها: `faster_rcnn_loss_curve.png`, `faster_rcnn_map_curve.png`, `faster_rcnn_augmentation_ablation.png`
+      + فایل‌های خام: `outputs_v3/logs/*` (نتیجه‌ی نهایی) و `outputs_ablation_baseline/logs/*` (کنترل بدون aug)
+      + `configs/project_config.yaml -> results.faster_rcnn` و `results.faster_rcnn_ablation_no_augmentation`
+**🚪 گیت ۳: ✅ تایید شد (نهایی)**
 
 ⚠️ **درس گرفته‌شده (اعمال‌شده برای Phase 4):** train_faster_rcnn.py فقط train loss لاگ می‌کرد؛ mAP/Recall
 باید عقب‌گرد از چک‌پوینت‌ها بازسازی می‌شد. **برای Phase 4 این مشکل رخ نخواهد داد** چون Ultralytics YOLO
 به‌صورت built-in و خودکار در هر epoch یک `results.csv` با ستون‌های
 precision/recall/mAP50/mAP50-95 (هم train هم val) می‌نویسد — بدون نیاز به کد اضافه.
 
-## Phase 4 — YOLO11 🔄 **[کد آماده، منتظر بازآموزی Phase 3]**
+## Phase 4 — YOLO11 🔄 **[فاز فعلی -- آماده‌ی اجرا]**
 - [x] 4.1 دیتاست YOLO detection آماده از Phase 2.7 (`data/processed/yolo_detection/data.yaml`)
-- [x] 4.2 config منجمد با augmentation صحیح (fliplr=0.5, hsv_v≈0.2) تحمیل شد -- منطبق با Faster R-CNN اصلاح‌شده
-- [x] کد آموزش با resume خودکار — تست کامل End-to-End با اجرای واقعی ۵۰ epoch روی داده‌ی کوچک
-- [ ] 4.3 اجرای آموزش واقعی روی GPU کگل — بعد از بازآموزی Faster R-CNN اجرا شود (برای مقایسه‌ی منصفانه)
+- [x] 4.2 config منجمد با augmentation منطبق (fliplr=0.5, hsv_v≈0.2) تحمیل شد
+- [x] کد آموزش با resume خودکار + خودتاییدی `[AUGMENTATION CHECK]` — تست End-to-End شد
+- [ ] 4.3 اجرای آموزش واقعی روی GPU کگل — **در انتظار اجرای شما**
 - [ ] 4.4 محاسبه FPS/Params/GFLOPs
 - [ ] 4.5 گزارش عملکرد YOLO11
 **🚪 گیت ۴: هنوز باز**

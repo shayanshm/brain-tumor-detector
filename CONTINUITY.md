@@ -22,9 +22,8 @@
 `phase2-data-converted`, `phase3-fastercnn-trained`, `phase4-yolo11-trained`, ...
 
 ## Phase 3 — چه چیزی از کگل بردارید؟
-⚠️ **یادداشت مهم:** پوشه‌ی `outputs_v2/` (اجرای دوم) که قبلاً دانلود کردید در واقع augmentation
-نداشت (باگ sync، توضیح کامل در ROADMAP.md). آن پوشه را می‌توانید به‌عنوان آرشیو/مرجع واریانس نگه
-دارید ولی **منبع نتایج نهایی نیست**. اجرای بعدی باید در `outputs_v3/` ذخیره شود.
+- نتیجه‌ی نهایی (با augmentation): `outputs_v3/`
+- اجرای کنترل/ablation (بدون augmentation): `outputs_ablation_baseline/`
 
 بعد از اجرای `train_faster_rcnn.py` (چند ساعت طول می‌کشد، حتماً قبل از شروع Quick Save بزنید تا اگر
 session قطع شد چیزی از دست نرود، و در حین آموزش هم هر چند ساعت Quick Save بزنید):

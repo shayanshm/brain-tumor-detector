@@ -1,0 +1,9 @@
+Faster R-CNN (نسخه‌ی نهایی، با augmentation) — Model Stats (checkpoint: faster_rcnn_epoch50.pt, image-size=640, Kaggle GPU)
+Date: 2026-08-14
+
+== نتایج ==
+  params: 43266403
+  params_millions: 43.27
+  gflops: 280.38
+  fps: 8.12
+  model_size_mb: 165.41
