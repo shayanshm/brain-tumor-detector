@@ -28,7 +28,15 @@
 | 14 | ISMRM Proceedings 2022 | YOLOv5 mAP=89.5%؛ Faster R-CNN در کلاس‌بندی قوی اما در لوکالیزیشن ضعیف — نکته‌ی کلیدی برای بحث Phase 10 |
 | 15 | *Detection and Localization of Brain Tumors Using YOLO*, JAIC | YOLOv12: recall=97.32%, mAP@0.5=92.2% — بستر مقایسه با نسخه‌های خیلی جدیدتر |
 
-## جمع‌بندی برای Phase 5 (Sanity Check اعداد)
+## ۴. پشتوانه‌ی یافته‌ی Phase 4 (ضعف عملکرد glioma) — افزوده در 2026-08-16
+| # | مرجع | یافته‌ی کلیدی |
+|---|---|---|
+| 16 | Radiology Assistant, *Systematic Approach to Brain Tumors* | گلیوما نفوذی است؛ enhancement کامل گستره‌ی تومور را نشان نمی‌دهد |
+| 17 | *An overview of meningiomas*, PMC | meningioma مرزهای کاملاً مشخص و dural-based دارد |
+| 18 | *InfiltrNet*, arXiv 2025 | گلیوما بدون مرز واضح به بافت مجاور نفوذ می‌کند |
+| 19 | *Enhanced glioma tumor detection...*, Nature Sci Rep 2025 | روش‌های موجود دقت مرزی پایین‌تری در گلیوما دارند |
+| 20 | *A Review on DL Methods for Glioma Segmentation*, 2025 | تقسیم‌بندی گلیوما به نفوذی/circumscribed |
+| 21 | EMCAD, arXiv 2509.05431 | نمونه‌ی خلاف: در یک معماری خاص، Dice گلیوما از meningioma بالاتر بود (نشان می‌دهد الگو universal نیست) |
 بر اساس مرجع #۱۰ و #۱۱ (دقیقاً همین سه کلاس)، انتظار می‌رود:
 - mAP50 نهایی YOLO11 ما در بازه‌ی تقریبی **0.85–0.95** باشد (در صورت انحراف زیاد، باید در Phase 5 بررسی علت شود).
 - Faster R-CNN طبق الگوی مرجع #۱۴، ممکن است در Precision/کلاس‌بندی رقابتی باشد اما در IoU/لوکالیزیشن ضعیف‌تر ظاهر شود — این دقیقاً همان trade-off است که سند اصلی در Phase 10 خواستار بحث انتقادی درباره‌ی آن است.

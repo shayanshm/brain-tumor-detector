@@ -71,21 +71,27 @@
 به‌صورت built-in و خودکار در هر epoch یک `results.csv` با ستون‌های
 precision/recall/mAP50/mAP50-95 (هم train هم val) می‌نویسد — بدون نیاز به کد اضافه.
 
-## Phase 4 — YOLO11 🔄 **[فاز فعلی -- آماده‌ی اجرا]**
-- [x] 4.1 دیتاست YOLO detection آماده از Phase 2.7 (`data/processed/yolo_detection/data.yaml`)
-- [x] 4.2 config منجمد با augmentation منطبق (fliplr=0.5, hsv_v≈0.2) تحمیل شد
-- [x] کد آموزش با resume خودکار + خودتاییدی `[AUGMENTATION CHECK]` — تست End-to-End شد
-- [ ] 4.3 اجرای آموزش واقعی روی GPU کگل — **در انتظار اجرای شما**
-- [ ] 4.4 محاسبه FPS/Params/GFLOPs
-- [ ] 4.5 گزارش عملکرد YOLO11
-**🚪 گیت ۴: هنوز باز**
+## Phase 4 — YOLO11 ✅ **[بسته شد]**
+- [x] آموزش کامل — ۵۰ epoch، فقط ۰.۴۱ ساعت (۲۵ برابر سریع‌تر از Faster R-CNN)
+- [x] 4.4 نتایج نهایی روی TEST set: mAP50=0.886 | mAP50-95=0.639 | P=0.873 | R=0.829 |
+      Params=2.59M | GFLOPs=6.5 | FPS=102.01 | Size=5.22MB
+      بدون نشانه‌ی overfitting؛ چک‌پوینت best.pt در epoch~۴۳
+- [x] یافته‌ی کلیدی per-class: glioma (بزرگ‌ترین کلاس داده) ضعیف‌ترین عملکرد را در هر دو مدل دارد
+      (احتمالاً به‌خاطر مرزهای پخش‌تر تومور در MRI، نه کمبود داده)
+- [x] 4.5 گزارش نهایی → `reports/yolo11_performance_report.md`
+      + نمودارها: `yolo11_training_curves.png`, `yolo11_confusion_matrix.png`
+      + فایل‌های خام: `outputs/yolo11/run1/{args.yaml, results.csv, model_stats.txt, test_eval.txt}`
+      + `configs/project_config.yaml -> results.yolo11`
+**🚪 گیت ۴: ✅ تایید شد**
 
-## Phase 5 — مقایسه کمّی عملکرد ⬜
-- [ ] 5.1 تجمیع معیارهای Detection (Precision/Recall/F1/IoU/Dice/mAP@0.5/mAP@0.5:0.95) هر دو مدل
-      (اعداد Faster R-CNN از قبل در `configs/project_config.yaml -> results.faster_rcnn` موجود است)
-- [ ] 5.2 تجمیع معیارهای Computational (FPS/Params/GFLOPs/GPU mem/Train time/Inference time)
-- [ ] 5.3 ساخت جدول‌ها و نمودارهای مقایسه‌ای نهایی + sanity-check با مرجع #۱۰ فاز ۱ (Taha et al.)
-**🚪 گیت ۵**
+## Phase 5 — مقایسه کمّی عملکرد 🔄 **[فاز فعلی]**
+- [x] پایپ‌لاین یکپارچه‌ی محاسبه‌ی Precision/Recall/F1/IoU/Dice ساخته و تست شد (چون COCOeval/Ultralytics
+      این‌ها را با روش‌های ناهمسان می‌دهند؛ اینجا هر دو مدل با دقیقاً یک الگوریتم greedy matching سنجیده می‌شوند)
+      - `src/eval/dump_predictions_faster_rcnn.py` + `dump_predictions_yolo.py`: خروجی خام هر مدل به فرمت یکسان
+      - `src/eval/compare_models.py`: تست کامل با داده‌ی کنترل‌شده (TP/FP/FN/P/R/F1/IoU/Dice همه assert شدند)
+- [ ] 5.1/5.2 اجرای واقعی dump روی Kaggle (نیاز به هر دو چک‌پوینت) — **در انتظار اجرای شما**
+- [ ] 5.3 جدول‌ها و نمودارهای نهایی (بعد از دریافت predictions، در sandbox من بدون نیاز به GPU انجام می‌شود)
+**🚪 گیت ۵: هنوز باز**
 
 ## Phase 6 — ارزیابی استحکام (Robustness) ⬜
 - [ ] 6.1 پایپ‌لاین corruption (Albumentations): Brightness±, Gaussian Noise, Salt & Pepper,

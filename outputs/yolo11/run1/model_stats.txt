@@ -1,0 +1,11 @@
+YOLO11n — Model Stats (checkpoint: run1/weights/best.pt, image-size=640, Kaggle GPU)
+Date: 2026-08-16
+
+YOLO11n summary: 182 layers, 2,590,425 parameters, 0 gradients, 6.5 GFLOPs
+
+== نتایج ==
+  params: 2590425
+  params_millions: 2.59
+  gflops: 6.5
+  fps: 102.01
+  model_size_mb: 5.22

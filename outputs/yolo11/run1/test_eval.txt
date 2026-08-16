@@ -1,0 +1,13 @@
+YOLO11n — Final Evaluation on TEST set (checkpoint: run1/weights/best.pt)
+Date: 2026-08-16
+
+Ultralytics 8.4.117 -- torch-2.10.0+cu128 CUDA:0 (Tesla T4, 14912MiB)
+YOLO11n summary (fused): 101 layers, 2,582,737 parameters, 0 gradients, 6.4 GFLOPs
+
+                 Class     Images  Instances      Box(P          R      mAP50  mAP50-95)
+                   all        308        308      0.873      0.829      0.886      0.639
+                glioma        159        159      0.781      0.649      0.746      0.448
+            meningioma         62         62      0.929      0.919      0.965      0.798
+             pituitary         87         87      0.911       0.92      0.948      0.672
+
+Speed: 1.7ms preprocess, 4.6ms inference, 0.0ms loss, 1.8ms postprocess per image
