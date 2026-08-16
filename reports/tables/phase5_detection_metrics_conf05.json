@@ -1,0 +1,98 @@
+{
+  "Faster R-CNN": {
+    "overall": {
+      "tp": 243,
+      "fp": 57,
+      "fn": 65,
+      "n_gt": 308,
+      "precision": 0.81,
+      "recall": 0.789,
+      "f1": 0.7993,
+      "mean_iou": 0.8574,
+      "mean_dice": 0.9194
+    },
+    "per_class": {
+      "glioma": {
+        "tp": 103,
+        "fp": 40,
+        "fn": 56,
+        "n_gt": 159,
+        "precision": 0.7203,
+        "recall": 0.6478,
+        "f1": 0.6821,
+        "mean_iou": 0.8223,
+        "mean_dice": 0.8975
+      },
+      "meningioma": {
+        "tp": 59,
+        "fp": 8,
+        "fn": 3,
+        "n_gt": 62,
+        "precision": 0.8806,
+        "recall": 0.9516,
+        "f1": 0.9147,
+        "mean_iou": 0.9152,
+        "mean_dice": 0.955
+      },
+      "pituitary": {
+        "tp": 81,
+        "fp": 9,
+        "fn": 6,
+        "n_gt": 87,
+        "precision": 0.9,
+        "recall": 0.931,
+        "f1": 0.9153,
+        "mean_iou": 0.8598,
+        "mean_dice": 0.9214
+      }
+    }
+  },
+  "YOLO11": {
+    "overall": {
+      "tp": 246,
+      "fp": 39,
+      "fn": 62,
+      "n_gt": 308,
+      "precision": 0.8632,
+      "recall": 0.7987,
+      "f1": 0.8297,
+      "mean_iou": 0.8516,
+      "mean_dice": 0.9154
+    },
+    "per_class": {
+      "glioma": {
+        "tp": 109,
+        "fp": 26,
+        "fn": 50,
+        "n_gt": 159,
+        "precision": 0.8074,
+        "recall": 0.6855,
+        "f1": 0.7415,
+        "mean_iou": 0.8203,
+        "mean_dice": 0.8953
+      },
+      "meningioma": {
+        "tp": 57,
+        "fp": 4,
+        "fn": 5,
+        "n_gt": 62,
+        "precision": 0.9344,
+        "recall": 0.9194,
+        "f1": 0.9268,
+        "mean_iou": 0.9048,
+        "mean_dice": 0.9482
+      },
+      "pituitary": {
+        "tp": 80,
+        "fp": 9,
+        "fn": 7,
+        "n_gt": 87,
+        "precision": 0.8989,
+        "recall": 0.9195,
+        "f1": 0.9091,
+        "mean_iou": 0.8563,
+        "mean_dice": 0.9194
+      }
+    }
+  }
+}

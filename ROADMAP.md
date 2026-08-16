@@ -84,16 +84,20 @@ precision/recall/mAP50/mAP50-95 (هم train هم val) می‌نویسد — بد
       + `configs/project_config.yaml -> results.yolo11`
 **🚪 گیت ۴: ✅ تایید شد**
 
-## Phase 5 — مقایسه کمّی عملکرد 🔄 **[فاز فعلی]**
-- [x] پایپ‌لاین یکپارچه‌ی محاسبه‌ی Precision/Recall/F1/IoU/Dice ساخته و تست شد (چون COCOeval/Ultralytics
-      این‌ها را با روش‌های ناهمسان می‌دهند؛ اینجا هر دو مدل با دقیقاً یک الگوریتم greedy matching سنجیده می‌شوند)
-      - `src/eval/dump_predictions_faster_rcnn.py` + `dump_predictions_yolo.py`: خروجی خام هر مدل به فرمت یکسان
-      - `src/eval/compare_models.py`: تست کامل با داده‌ی کنترل‌شده (TP/FP/FN/P/R/F1/IoU/Dice همه assert شدند)
-- [ ] 5.1/5.2 اجرای واقعی dump روی Kaggle (نیاز به هر دو چک‌پوینت) — **در انتظار اجرای شما**
-- [ ] 5.3 جدول‌ها و نمودارهای نهایی (بعد از دریافت predictions، در sandbox من بدون نیاز به GPU انجام می‌شود)
-**🚪 گیت ۵: هنوز باز**
+## Phase 5 — مقایسه کمّی عملکرد ✅ **[بسته شد]**
+- [x] پایپ‌لاین یکپارچه‌ی Precision/Recall/F1/IoU/Dice ساخته، تست، و روی داده‌ی واقعی اجرا شد
+- [x] 5.1 نتایج (conf>=0.5): F1 -- FR-CNN=0.799 در برابر YOLO11=0.830؛ IoU/Dice برعکس (FR-CNN کمی بالاتر)
+- [x] یافته‌ی per-class (سه‌بار مستقل تایید شده): glioma ضعیف‌ترین F1 در هر دو مدل (پشتوانه‌ی علمی کامل)
+- [x] 5.2 معیارهای محاسباتی تجمیع شد: YOLO11 در Params(۱۷x)، GFLOPs(۴۳x)، FPS(۱۳x)، Train time(۲۵x) برتر
+- [x] 5.3 گزارش نهایی → `reports/phase5_comparison_report.md`
+      + ۴ نمودار: `phase5_detection_metrics.png`, `phase5_map_official.png`,
+        `phase5_computational.png`, `phase5_per_class_f1.png`
+      + `configs/project_config.yaml -> phase5_unified_comparison`
+      + داده‌های خام: `outputs_v3/logs/faster_rcnn_test_predictions.json`,
+        `outputs/yolo11/run1/yolo_test_predictions.json`, `data/processed/coco_format/test.json`
+**🚪 گیت ۵: ✅ تایید شد**
 
-## Phase 6 — ارزیابی استحکام (Robustness) ⬜
+## Phase 6 — ارزیابی استحکام (Robustness) ⬜ **[فاز فعلی]**
 - [ ] 6.1 پایپ‌لاین corruption (Albumentations): Brightness±, Gaussian Noise, Salt & Pepper,
       Gaussian Blur, Motion Blur, JPEG@20%, JPEG@50% — فقط روی اسپلیت test
 - [ ] 6.2 اجرای inference هر دو مدل روی هر نوع corruption

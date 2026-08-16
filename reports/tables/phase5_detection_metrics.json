@@ -1,0 +1,98 @@
+{
+  "Faster R-CNN": {
+    "overall": {
+      "tp": 263,
+      "fp": 130,
+      "fn": 45,
+      "n_gt": 308,
+      "precision": 0.6692,
+      "recall": 0.8539,
+      "f1": 0.7504,
+      "mean_iou": 0.8519,
+      "mean_dice": 0.916
+    },
+    "per_class": {
+      "glioma": {
+        "tp": 121,
+        "fp": 87,
+        "fn": 38,
+        "n_gt": 159,
+        "precision": 0.5817,
+        "recall": 0.761,
+        "f1": 0.6594,
+        "mean_iou": 0.8156,
+        "mean_dice": 0.8931
+      },
+      "meningioma": {
+        "tp": 60,
+        "fp": 17,
+        "fn": 2,
+        "n_gt": 62,
+        "precision": 0.7792,
+        "recall": 0.9677,
+        "f1": 0.8633,
+        "mean_iou": 0.9152,
+        "mean_dice": 0.955
+      },
+      "pituitary": {
+        "tp": 82,
+        "fp": 26,
+        "fn": 5,
+        "n_gt": 87,
+        "precision": 0.7593,
+        "recall": 0.9425,
+        "f1": 0.841,
+        "mean_iou": 0.8593,
+        "mean_dice": 0.9212
+      }
+    }
+  },
+  "YOLO11": {
+    "overall": {
+      "tp": 265,
+      "fp": 107,
+      "fn": 43,
+      "n_gt": 308,
+      "precision": 0.7124,
+      "recall": 0.8604,
+      "f1": 0.7794,
+      "mean_iou": 0.8445,
+      "mean_dice": 0.911
+    },
+    "per_class": {
+      "glioma": {
+        "tp": 123,
+        "fp": 67,
+        "fn": 36,
+        "n_gt": 159,
+        "precision": 0.6474,
+        "recall": 0.7736,
+        "f1": 0.7049,
+        "mean_iou": 0.8098,
+        "mean_dice": 0.8887
+      },
+      "meningioma": {
+        "tp": 60,
+        "fp": 15,
+        "fn": 2,
+        "n_gt": 62,
+        "precision": 0.8,
+        "recall": 0.9677,
+        "f1": 0.8759,
+        "mean_iou": 0.9016,
+        "mean_dice": 0.9464
+      },
+      "pituitary": {
+        "tp": 82,
+        "fp": 25,
+        "fn": 5,
+        "n_gt": 87,
+        "precision": 0.7664,
+        "recall": 0.9425,
+        "f1": 0.8454,
+        "mean_iou": 0.8549,
+        "mean_dice": 0.9186
+      }
+    }
+  }
+}

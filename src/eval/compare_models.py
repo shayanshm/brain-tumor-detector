@@ -95,11 +95,15 @@ def build_gt_index(coco_gt):
     return gt_by_image_class
 
 
-def evaluate_predictions(gt_path: str, pred_path: str, iou_threshold: float = 0.5) -> dict:
+def evaluate_predictions(gt_path: str, pred_path: str, iou_threshold: float = 0.5,
+                          conf_threshold: float = 0.0) -> dict:
     with open(gt_path) as f:
         coco_gt = json.load(f)
     with open(pred_path) as f:
         preds = json.load(f)
+
+    if conf_threshold > 0:
+        preds = [p for p in preds if p["score"] >= conf_threshold]
 
     gt_index = build_gt_index(coco_gt)
     overall = match_and_score(gt_index, preds, iou_threshold)
@@ -125,10 +129,12 @@ if __name__ == "__main__":
     parser.add_argument("--pred-b", required=True)
     parser.add_argument("--name-b", default="Model B")
     parser.add_argument("--out", required=True)
+    parser.add_argument("--conf-threshold", type=float, default=0.0,
+                         help="فیلتر پیش‌بینی‌های کم‌اطمینان قبل از محاسبه (پیشنهاد: 0.5 برای نقطه‌ی عملیاتی واقع‌بینانه)")
     args = parser.parse_args()
 
-    result_a = evaluate_predictions(args.gt, args.pred_a)
-    result_b = evaluate_predictions(args.gt, args.pred_b)
+    result_a = evaluate_predictions(args.gt, args.pred_a, conf_threshold=args.conf_threshold)
+    result_b = evaluate_predictions(args.gt, args.pred_b, conf_threshold=args.conf_threshold)
 
     print(f"== {args.name_a} (overall, IoU>=0.5) ==")
     print(result_a["overall"])
