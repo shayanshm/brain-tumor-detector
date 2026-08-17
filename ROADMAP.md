@@ -95,7 +95,7 @@ precision/recall/mAP50/mAP50-95 (هم train هم val) می‌نویسد — بد
       + `configs/project_config.yaml -> phase5_unified_comparison`
       + داده‌های خام: `outputs_v3/logs/faster_rcnn_test_predictions.json`,
         `outputs/yolo11/run1/yolo_test_predictions.json`, `data/processed/coco_format/test.json`
-**🚪 گیت ۵: ✅ تایید شد**
+**🚪 گیت ۵: ⚠️ بازبینی 2026-08-17 نقص واقعی پیدا کرد (GPU memory) — جزئیات کامل در ادامه‌ی چت**
 
 ## Phase 6 — ارزیابی استحکام (Robustness) ⬜ **[فاز فعلی]**
 - [ ] 6.1 پایپ‌لاین corruption (Albumentations): Brightness±, Gaussian Noise, Salt & Pepper,
@@ -139,9 +139,9 @@ precision/recall/mAP50/mAP50-95 (هم train هم val) می‌نویسد — بد
 ---
 
 ## چک‌لیست نهایی تحویل
-- [ ] پیاده‌سازی بازتولیدپذیر دو دیتکتور (Faster R-CNN/torchvision ✅ و YOLO11 ⬜) با شرایط آموزشی هم‌راستا
-- [ ] بنچمارک استاندارد دقت و محاسبات (Faster R-CNN ✅، YOLO11 ⬜)
-- [ ] بنچمارک استحکام تحت corruption های رایج (⬜)
-- [ ] تحلیل تبیین‌پذیری با Grad-CAM (⬜)
-- [ ] مقایسه‌های آماری معنادار (⬜)
-- [ ] بحث انتقادی نهایی درباره مناسب‌ترین پارادایم تشخیص (⬜)
+- [x] پیاده‌سازی بازتولیدپذیر دو دیتکتور (Faster R-CNN/torchvision و YOLO11) با شرایط آموزشی هم‌راستا
+- [x] بنچمارک استاندارد دقت و محاسبات (هر دو مدل — Phase 3/4/5)
+- [ ] بنچمارک استحکام تحت corruption های رایج (⬜ Phase 6)
+- [ ] تحلیل تبیین‌پذیری با Grad-CAM (⬜ Phase 7)
+- [ ] مقایسه‌های آماری معنادار (⬜ Phase 8)
+- [ ] بحث انتقادی نهایی درباره مناسب‌ترین پارادایم تشخیص (⬜ Phase 10)

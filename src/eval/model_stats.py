@@ -25,6 +25,35 @@ def compute_model_stats(model, device, image_size: int = 640, n_fps_runs: int = 
         gflops = None
         print(f"⚠️ محاسبه‌ی GFLOPs با خطا مواجه شد (برای مدل‌های detection رایج است): {e}")
 
+    # --- GPU Memory حالت Inference (نیاز صریح سند: GPU memory) ---
+    peak_memory_inference_mb = None
+    if torch.cuda.is_available():
+        torch.cuda.reset_peak_memory_stats(device)
+        with torch.no_grad():
+            model(dummy_input)
+        peak_memory_inference_mb = round(torch.cuda.max_memory_allocated(device) / (1024 * 1024), 2)
+
+    # --- GPU Memory حالت Training (یک forward+backward با batch واقعی؛ بدون نیاز به آموزش کامل) ---
+    peak_memory_train_mb = None
+    if torch.cuda.is_available():
+        try:
+            model.train()
+            torch.cuda.reset_peak_memory_stats(device)
+            train_batch_size = 8
+            train_images = [torch.rand(3, image_size, image_size).to(device) for _ in range(train_batch_size)]
+            train_targets = [{
+                "boxes": torch.tensor([[10.0, 10.0, 100.0, 100.0]], device=device),
+                "labels": torch.tensor([1], device=device),
+            } for _ in range(train_batch_size)]
+            loss_dict = model(train_images, train_targets)
+            total_loss = sum(loss_dict.values())
+            total_loss.backward()
+            peak_memory_train_mb = round(torch.cuda.max_memory_allocated(device) / (1024 * 1024), 2)
+            model.zero_grad()
+            model.eval()
+        except Exception as e:
+            print(f"⚠️ اندازه‌گیری حافظه‌ی training با خطا مواجه شد: {e}")
+
     # --- FPS (میانگین n_fps_runs بار inference) ---
     with torch.no_grad():
         for _ in range(3):  # warm-up
@@ -46,6 +75,9 @@ def compute_model_stats(model, device, image_size: int = 640, n_fps_runs: int = 
         "params_millions": round(n_params / 1e6, 2),
         "gflops": round(gflops, 2) if gflops else None,
         "fps": round(fps, 2),
+        "inference_time_ms": round(1000 / fps, 3),
+        "gpu_peak_memory_inference_mb": peak_memory_inference_mb,
+        "gpu_peak_memory_train_batch8_mb": peak_memory_train_mb,
         "model_size_mb": round(size_mb, 2),
     }
 

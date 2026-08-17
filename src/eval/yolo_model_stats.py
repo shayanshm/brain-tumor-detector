@@ -25,10 +25,18 @@ def compute_yolo_stats(checkpoint_path: str, image_size: int = 640, n_fps_runs: 
     # verbose=True هم مقدار صحیح را برمی‌گرداند هم یک خط خلاصه چاپ می‌کند (بی‌ضرر).
     n_layers, n_params, n_gradients, gflops = model.info(verbose=True)
 
-    # --- FPS: دقیقاً همان روش model_stats.py (warm-up + میانگین N اجرا) برای قابل‌مقایسه‌بودن ---
+    # --- FPS + GPU Memory: دقیقاً همان روش model_stats.py، برای قابل‌مقایسه‌بودن Phase 5 ---
     underlying_model = model.model
     underlying_model.eval()
     dummy_input = torch.rand(1, 3, image_size, image_size).to(device)
+
+    # --- GPU Memory (نیاز صریح سند: Computational metrics -> GPU memory) ---
+    peak_memory_mb = None
+    if torch.cuda.is_available():
+        torch.cuda.reset_peak_memory_stats(device)
+        with torch.no_grad():
+            underlying_model(dummy_input)
+        peak_memory_mb = round(torch.cuda.max_memory_allocated(device) / (1024 * 1024), 2)
 
     with torch.no_grad():
         for _ in range(3):  # warm-up
@@ -47,6 +55,8 @@ def compute_yolo_stats(checkpoint_path: str, image_size: int = 640, n_fps_runs: 
         "params_millions": round(n_params / 1e6, 2),
         "gflops": round(gflops, 2),
         "fps": round(fps, 2),
+        "inference_time_ms": round(1000 / fps, 3),
+        "gpu_peak_memory_mb": peak_memory_mb,
         "model_size_mb": round(size_mb, 2),
     }
 

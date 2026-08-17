@@ -114,3 +114,23 @@ phase5_unified_comparison:
   full_range_conf0.05:
     faster_rcnn: {precision: 0.669, recall: 0.854, f1: 0.750}
     yolo11: {precision: 0.712, recall: 0.860, f1: 0.779}
+  confusion_matrix:
+    faster_rcnn: "reports/figures/faster_rcnn_confusion_matrix.png (افزوده در بازبینی 2026-08-17)"
+    yolo11: "reports/figures/yolo11_confusion_matrix.png"
+
+# بازبینی جامع Phase 0-5 (2026-08-17) -- نتایج و اقدامات
+audit_2026_08_17:
+  status: "نواقص واقعی پیدا شد؛ برخی رفع شد، یکی نیازمند اجرای سریع کاربر روی Kaggle"
+  fixed_without_kaggle:
+    - "Faster R-CNN confusion matrix (از داده‌ی خام موجود، بدون نیاز به GPU جدید)"
+    - "چک‌لیست نهایی تحویل در ROADMAP.md که stale مانده بود"
+    - "مستندسازی دائمی توضیح ۵ کلاس سند در برابر ۳ کلاس دیتاست واقعی (قبلاً فقط در چت بود)"
+    - "افزودن inference_time_ms صریح به کنار FPS در هر دو اسکریپت model_stats"
+  pending_action_required:
+    - item: "GPU memory (نیاز صریح سند: Computational -> GPU memory)"
+      status: "هرگز اندازه‌گیری نشده بود؛ کد اضافه شد (inference + training-mode با batch=8)"
+      needs: "اجرای سریع (چند ثانیه) model_stats.py و yolo_model_stats.py روی Kaggle GPU"
+  optional_not_blocking:
+    - "منحنی Precision per-epoch برای Faster R-CNN (فقط نقطه‌ی نهایی داریم؛ mAP/AR per-epoch کامل است)
+       -- برای گرفتنش باید ۱۰ چک‌پوینت دوباره inference شوند؛ mAP/AR curve موجود همان هدف
+       (نمایش همگرایی/عدم overfitting) را به‌خوبی برآورده می‌کند"
