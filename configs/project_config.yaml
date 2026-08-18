@@ -69,7 +69,10 @@ results:
       params_millions: 43.27
       gflops: 280.38
       model_size_mb: 165.41
-      fps_kaggle_gpu: 8.12
+      fps_kaggle_gpu: 8.75
+      inference_time_ms: 114.25
+      gpu_peak_memory_inference_mb: 681.08
+      gpu_peak_memory_train_batch8_mb: 13444.64
     training_time_hours: 10.37
     augmentation: "Horizontal Flip p=0.5 + Brightness/Contrast jitter ±20%"
     overfitting_check: "بدون نشانه -- val metrics پایدار/بهبودیابنده تا epoch 50"
@@ -94,7 +97,10 @@ results:
       params_millions: 2.59
       gflops: 6.5
       model_size_mb: 5.22
-      fps_kaggle_gpu: 102.01
+      fps_kaggle_gpu: 101.66
+      inference_time_ms: 9.836
+      gpu_peak_memory_inference_mb: 71.96
+      gpu_peak_memory_train_batch8_mb: null  # اندازه‌گیری‌نشده -- توضیح در audit_2026_08_17
       fps_ultralytics_native: "~123 (1.7ms pre + 4.6ms infer + 1.8ms post)"
     training_time_hours: 0.405
     augmentation: "Horizontal Flip p=0.5 + hsv_v=0.2 (منطبق با Faster R-CNN)"
@@ -127,9 +133,18 @@ audit_2026_08_17:
     - "مستندسازی دائمی توضیح ۵ کلاس سند در برابر ۳ کلاس دیتاست واقعی (قبلاً فقط در چت بود)"
     - "افزودن inference_time_ms صریح به کنار FPS در هر دو اسکریپت model_stats"
   pending_action_required:
-    - item: "GPU memory (نیاز صریح سند: Computational -> GPU memory)"
-      status: "هرگز اندازه‌گیری نشده بود؛ کد اضافه شد (inference + training-mode با batch=8)"
-      needs: "اجرای سریع (چند ثانیه) model_stats.py و yolo_model_stats.py روی Kaggle GPU"
+    - item: "GPU memory آموزش YOLO11 (train_batch8_mb) هرگز واقعاً اندازه‌گیری نشد"
+      status: "نسخه‌ی 2026-08-18 این را 'توضیح داده شده' گرفت که کافی نبود -- اصلاح 2026-08-19"
+      needs: "چک لاگ کنسول آموزش اصلی (ستون GPU_mem) یا یک آموزش ۱-epoch‌ای کوتاه (~۳۰ثانیه) صرفاً برای این عدد"
+  resolved_2026_08_18:
+    gpu_memory:
+      faster_rcnn: {inference_mb: 681.08, train_batch8_mb: 13444.64, inference_time_ms: 114.25}
+      yolo11: {inference_mb: 71.96, train_batch8_mb: null, inference_time_ms: 9.836}
+      note: >
+        Faster R-CNN با batch=8 به ۱۳.۴GB حافظه‌ی training نیاز دارد (نزدیک به سقف GPU های
+        معمول ۱۵-۱۶GB مثل T4/P100) -- نکته‌ی مهم برای بحث قابلیت استقرار در Phase 10.
+        YOLO11 حتی در inference هم ~۹.۵ برابر کم‌مصرف‌تر است. عدد training واقعی YOLO11 هنوز
+        در انتظار دریافت است (رجوع کنید به pending_action_required بالا).
   optional_not_blocking:
     - "منحنی Precision per-epoch برای Faster R-CNN (فقط نقطه‌ی نهایی داریم؛ mAP/AR per-epoch کامل است)
        -- برای گرفتنش باید ۱۰ چک‌پوینت دوباره inference شوند؛ mAP/AR curve موجود همان هدف

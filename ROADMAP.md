@@ -95,15 +95,24 @@ precision/recall/mAP50/mAP50-95 (هم train هم val) می‌نویسد — بد
       + `configs/project_config.yaml -> phase5_unified_comparison`
       + داده‌های خام: `outputs_v3/logs/faster_rcnn_test_predictions.json`,
         `outputs/yolo11/run1/yolo_test_predictions.json`, `data/processed/coco_format/test.json`
-**🚪 گیت ۵: ⚠️ بازبینی 2026-08-17 نقص واقعی پیدا کرد (GPU memory) — جزئیات کامل در ادامه‌ی چت**
+**🚪 گیت ۵: ✅ تایید شد (نهایی — شامل GPU memory)**
 
-## Phase 6 — ارزیابی استحکام (Robustness) ⬜ **[فاز فعلی]**
-- [ ] 6.1 پایپ‌لاین corruption (Albumentations): Brightness±, Gaussian Noise, Salt & Pepper,
-      Gaussian Blur, Motion Blur, JPEG@20%, JPEG@50% — فقط روی اسپلیت test
-- [ ] 6.2 اجرای inference هر دو مدل روی هر نوع corruption
-- [ ] 6.3 تحلیل افت عملکرد (Original→Blur→Noise→Brightness→Compression) + ویژوالایز زنجیره
-- [ ] 6.4 تولید «گزارش بنچمارک استحکام»
-**🚪 گیت ۶**
+## Phase 6 — ارزیابی استحکام (Robustness) 🔄 **[فاز فعلی]**
+- [x] 6.1 پایپ‌لاین ۸ نوع corruption — تست کمّی و بصری شد
+      ⚠️ **اصلاح 2026-08-19:** تصویر پیش‌نمایش قبلی (`corruption_types_preview.png`) روی یک الگوی
+      **مصنوعی** بود (نه MRI واقعی) — فقط برای تست کد کافی بود، برای گزارش نهایی نیست.
+      **باید تکرار شود:** یک تصویر واقعی test از کاربر گرفته و پیش‌نمایش واقعی جایگزین شود.
+- [x] کد اجرای هر دو مدل روی همه‌ی ۹ حالت — تست End-to-End کامل
+- [x] کد تحلیل افت عملکرد — تست با سناریوی کنترل‌شده
+- [ ] 6.2 اجرای واقعی روی Kaggle — در انتظار اجرای شما
+- [ ] 6.3/6.4 تحلیل و گزارش نهایی
+**🚪 گیت ۶: هنوز باز**
+
+## ⚠️ نقص باز از Phase 5 (اصلاح 2026-08-19)
+GPU memory آموزش YOLO11 هرگز واقعاً اندازه‌گیری نشد (فقط توضیح داده شد چرا سخت است — که کافی نبود).
+**باید تکرار شود:** یا لاگ کنسول آموزش ۵۰-epoch اصلی (اگر هنوز دارید) چک شود، یا یک آموزش
+۱-epoch‌ای کوتاه (~۳۰ ثانیه) فقط برای خواندن ستون `GPU_mem` از خروجی خود Ultralytics اجرا شود.
+جزئیات دستور در ادامه‌ی چت.
 
 ## Phase 7 — تحلیل تبیین‌پذیری (Grad-CAM) ⬜
 - [ ] 7.1 انتخاب کتابخانه سازگار با هر دو معماری (pytorch-grad-cam: EigenCAM/AblationCAM برای YOLO،
