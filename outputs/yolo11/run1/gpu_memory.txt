@@ -1,7 +1,7 @@
 YOLO11n — GPU Memory & Inference Time (checkpoint: best.pt, image-size=640, Kaggle GPU Tesla T4)
-Date: 2026-08-18
+Date: 2026-08-18 (inference) | 2026-08-20 (training memory، اصلاح‌شده)
 
-== نتایج ==
+== نتایج inference ==
   params: 2590425
   params_millions: 2.59
   gflops: 6.5
@@ -10,8 +10,11 @@ Date: 2026-08-18
   gpu_peak_memory_inference_mb: 71.96
   model_size_mb: 5.22
 
-نکته: حافظه‌ی training (با batch واقعی) برای YOLO11 مستقیماً اندازه‌گیری نشد -- چون شبیه‌سازی
-دستی forward+backward نیازمند پایپ‌لاین loss داخلی پیچیده‌ی Ultralytics است. شاهد غیرمستقیم:
-آموزش واقعی ۵۰ epoch روی همین GPU (ظرفیت ۱۴۹۱۲ MiB) بدون OOM کامل شد، در حالی که Faster R-CNN
-به‌تنهایی به ۱۳۴۴۴ MiB نیاز داشت -- یعنی حافظه‌ی training واقعی YOLO11 به‌طور قابل‌توجهی
-کمتر از این سقف است (نسبت حافظه‌ی inference هم ~۱:۹.۵ به نفع YOLO است).
+== نتیجه‌ی training memory (اصلاح 2026-08-20، واقعی از لاگ Ultralytics) ==
+یک آموزش واقعی ۱-epoch (batch=8, imgsz=640) اجرا و ستون GPU_mem واقعی خود Ultralytics خوانده شد
+(نه شبیه‌سازی دستی). فایل خام: outputs/yolo11/run1/gpu_memory_epoch1_raw.csv
+
+  gpu_peak_memory_train_batch8_mb: 1218.56  (=1.19G، پایدار از batch~59 تا انتهای epoch)
+
+مقایسه: Faster R-CNN (13,444.64 MB) نسبت به YOLO11 (1,218.56 MB) در training هم ~۱۱ برابر
+پرمصرف‌تر است -- سازگار با نسبت inference (~۹.۵ برابر) که قبلاً داشتیم.

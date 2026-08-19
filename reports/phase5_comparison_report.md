@@ -61,14 +61,12 @@ Faster R-CNN (`reports/figures/faster_rcnn_confusion_matrix.png`، افزوده�
 | FPS (GPU یکسان، روش یکسان) | 8.75 | 101.66 | YOLO11 **۱۲ برابر** سریع‌تر (inference) |
 | Inference time | 114.25 ms | 9.84 ms | YOLO11 **۱۲ برابر** سریع‌تر |
 | GPU Memory (inference) | 681.08 MB | 71.96 MB | YOLO11 **۹.۵ برابر** کم‌مصرف‌تر |
-| GPU Memory (training, batch=8) | **13,444.64 MB (~13.1 GB)** | اندازه‌گیری‌نشده* | — |
+| GPU Memory (training, batch=8) | 13,444.64 MB (~13.1 GB) | 1,218.56 MB (~1.19 GB) | YOLO11 **۱۱ برابر** کم‌مصرف‌تر |
 | زمان آموزش (۵۰ epoch، GPU یکسان) | 10.37h | 0.41h | YOLO11 **۲۵ برابر** سریع‌تر (train) |
 
-\* حافظه‌ی training برای YOLO11 مستقیماً قابل‌اندازه‌گیری با شبیه‌سازی دستی نبود (پایپ‌لاین loss
-داخلی Ultralytics پیچیده‌تر است). شاهد غیرمستقیم قوی: آموزش کامل ۵۰ epoch روی همان GPU (ظرفیت
-کل ۱۴,۹۱۲ MB) بدون خطای OOM انجام شد، در حالی که Faster R-CNN به‌تنهایی ۱۳,۴۴۵ MB (تقریباً کل
-ظرفیت) مصرف می‌کند — یعنی حافظه‌ی training واقعی YOLO11 به‌طور قابل‌توجهی کمتر است؛ با توجه به
-نسبت حافظه‌ی inference (~۱:۹.۵)، انتظار می‌رود این نسبت در training هم برقرار باشد.
+هر دو عدد GPU memory (inference و training) واقعی‌اند — Faster R-CNN از اندازه‌گیری مستقیم
+(forward/backward دستی)، YOLO11 از لاگ واقعی Ultralytics در یک آموزش ۱-epoch (چون شبیه‌سازی
+دستی loss داخلی YOLO قابل‌اعتماد نبود).
 
 ⚠️ **یافته‌ی مهم برای Phase 10:** Faster R-CNN با batch=8 در آستانه‌ی سقف حافظه‌ی GPU های معمول
 (T4/P100 با ۱۵-۱۶GB) قرار دارد — روی GPU های ضعیف‌تر یا batch size بزرگ‌تر، ممکن است اصلاً قابل

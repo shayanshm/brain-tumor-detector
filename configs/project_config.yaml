@@ -100,7 +100,7 @@ results:
       fps_kaggle_gpu: 101.66
       inference_time_ms: 9.836
       gpu_peak_memory_inference_mb: 71.96
-      gpu_peak_memory_train_batch8_mb: null  # اندازه‌گیری‌نشده -- توضیح در audit_2026_08_17
+      gpu_peak_memory_train_batch8_mb: 1218.56  # واقعی، از لاگ Ultralytics (2026-08-20)، نه شبیه‌سازی
       fps_ultralytics_native: "~123 (1.7ms pre + 4.6ms infer + 1.8ms post)"
     training_time_hours: 0.405
     augmentation: "Horizontal Flip p=0.5 + hsv_v=0.2 (منطبق با Faster R-CNN)"
@@ -132,10 +132,12 @@ audit_2026_08_17:
     - "چک‌لیست نهایی تحویل در ROADMAP.md که stale مانده بود"
     - "مستندسازی دائمی توضیح ۵ کلاس سند در برابر ۳ کلاس دیتاست واقعی (قبلاً فقط در چت بود)"
     - "افزودن inference_time_ms صریح به کنار FPS در هر دو اسکریپت model_stats"
-  pending_action_required:
-    - item: "GPU memory آموزش YOLO11 (train_batch8_mb) هرگز واقعاً اندازه‌گیری نشد"
-      status: "نسخه‌ی 2026-08-18 این را 'توضیح داده شده' گرفت که کافی نبود -- اصلاح 2026-08-19"
-      needs: "چک لاگ کنسول آموزش اصلی (ستون GPU_mem) یا یک آموزش ۱-epoch‌ای کوتاه (~۳۰ثانیه) صرفاً برای این عدد"
+  pending_action_required: []
+  resolved_2026_08_20:
+    yolo_train_memory: >
+      حل شد با روش درست (نه شبیه‌سازی): آموزش واقعی ۱-epoch اجرا و GPU_mem واقعی Ultralytics
+      خوانده شد = 1218.56 MB. نسبت با Faster R-CNN (13444.64 MB) = ۱۱ برابر، سازگار با نسبت
+      inference (~۹.۵ برابر). فایل خام: outputs/yolo11/run1/gpu_memory_epoch1_raw.csv
   resolved_2026_08_18:
     gpu_memory:
       faster_rcnn: {inference_mb: 681.08, train_batch8_mb: 13444.64, inference_time_ms: 114.25}
@@ -149,3 +151,31 @@ audit_2026_08_17:
     - "منحنی Precision per-epoch برای Faster R-CNN (فقط نقطه‌ی نهایی داریم؛ mAP/AR per-epoch کامل است)
        -- برای گرفتنش باید ۱۰ چک‌پوینت دوباره inference شوند؛ mAP/AR curve موجود همان هدف
        (نمایش همگرایی/عدم overfitting) را به‌خوبی برآورده می‌کند"
+
+# Phase 6 -- ارزیابی استحکام (Robustness)
+phase6_robustness:
+  methodology: "8 corruption types x 2 models x 308 test images, F1 @ conf>=0.5 IoU>=0.5"
+  key_finding: >
+    هر دو مدل در برابر نویز (Gaussian/Salt-Pepper) به‌شدت آسیب‌پذیرند (افت 80-100%) چون
+    augmentation هرگز شامل نویز نبود؛ در برابر بلور/روشنایی/فشرده‌سازی نسبتاً مقاوم‌اند (افت <20%).
+    YOLO11 حتی در بدترین حالت (نویز) کمی عملکرد حفظ می‌کند؛ Faster R-CNN کاملاً از کار می‌افتد.
+  faster_rcnn_f1:
+    original: 0.799
+    darker: 0.730
+    brighter: 0.764
+    gaussian_noise: 0.000
+    salt_pepper_noise: 0.006
+    gaussian_blur: 0.788
+    motion_blur: 0.701
+    jpeg_20: 0.629
+    jpeg_50: 0.801
+  yolo11_f1:
+    original: 0.830
+    darker: 0.763
+    brighter: 0.810
+    gaussian_noise: 0.164
+    salt_pepper_noise: 0.131
+    gaussian_blur: 0.827
+    motion_blur: 0.769
+    jpeg_20: 0.786
+    jpeg_50: 0.812
